@@ -36,17 +36,15 @@ export async function insert(dto) {
     //Construye request con parámetros tipados
     const rq = pool
         .request()
-        .input('Rango_edad', sql.Int(30), dto.RangoEdad || null)
         .input('Minimo', sql.Int, dto.Minimo || null)
         .input('Maximo', sql.Int, dto.Maximo || null);
         
     // Inserta y devuelve la fila recién creada
     const query = `
-                INSERT INTO ${table} (  [Rango_edad]
-                                        ,[Minimo]
+                INSERT INTO ${table} ( [Minimo]
                                         ,[Maximo]
                                         )
-                VALUES (@Rango_edad, @Minimo, @Maximo);
+                VALUES ( @Minimo, @Maximo);
                 `; 
     
     const result = await rq.query(query);
@@ -64,8 +62,8 @@ export async function update(dto) {
     // Primero, obtener los datos actuales
     const getCurrentData = await pool
         .request()
-        .input('RangoEdad', sql.Int, dto.RangoEdad)
-        .query(`SELECT * FROM ${table} WHERE Rango_edad = @RangoEdad`);
+        .input('ID_Rango_Edad', sql.Int, dto.RangoEdad)
+        .query(`SELECT * FROM ${table} WHERE ID_Rango_Edad = @ID_Rango_Edad`);
 
     const currentData = getCurrentData.recordset[0];
     
@@ -84,23 +82,22 @@ export async function update(dto) {
     //Construye request con parámetros tipados con los datos mezclados
     const rq = pool
         .request()
-        .input('RangoEdad', sql.Int, dto.RangoEdad)
+        .input('ID_Rango_Edad', sql.Int, dto.RangoEdad)
         .input('Minimo', sql.Int, dto.Minimo)
         .input('Maximo', sql.Int, dto.Maximo);
         
 
     const query = `
                 UPDATE ${table}
-                SET Rango_edad=@RangoEdad,
-                    Minimo=@Minimo,
+                SET Minimo=@Minimo,
                     Maximo=@Maximo
                     
             
-                WHERE Rango_edad=@RangoEdad;
+                WHERE ID_Rango_Edad=@ID_Rango_Edad;
                 
                 SELECT *
                 FROM ${table}
-                WHERE Rango_edad = @RangoEdad;
+                WHERE ID_Rango_Edad = @ID_Rango_Edad;
                 `;
     
     const result = await rq.query(query);
@@ -115,7 +112,7 @@ export async function remove(dto) {
     
     const pool = getPool();
     const rq = pool.request();
-    const query = `DELETE FROM ${table} WHERE Rango_edad=${dto.RangoEdad}`;
+    const query = `DELETE FROM ${table} WHERE ID_Rango_Edad=${dto.RangoEdad}`;
     
     const result = await rq.query(query);
     //console.log(result);

@@ -5,7 +5,7 @@ import Joi from 'joi';
 
 export const createRangoEdadSchema = Joi.object({
 
-    RangoEdad: Joi.number().max(30).required(),    
+    //RangoEdad: Joi.number().max(30).required(),    
     Minimo: Joi.number().max(120).required(),
     Maximo: Joi.number().max(120).required() 
 

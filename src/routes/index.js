@@ -7,6 +7,7 @@ import sensorRoutes from './sensor.routes.js';
 import trabajadorRoutes from './trabajador.routes.js';
 import rangoedadRoutes from './rangoedad.routes.js';
 // import medidaRoutes from './medida.routes.js';
+import provision from './provision.routes.js';
 
 
 
@@ -20,6 +21,7 @@ router.use('/nodoiot', nodoiotRoutes);
 router.use('/sensor', sensorRoutes);
 router.use('/trabajador', trabajadorRoutes);
 router.use('/rangoedad', rangoedadRoutes);
+router.use('/provision', provision);
 // router.use('/medida', medidaRoutes);
 
 export default router;

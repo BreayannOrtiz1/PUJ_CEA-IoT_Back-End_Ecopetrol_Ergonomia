@@ -32,16 +32,16 @@ export async function insert(dto) {
     const rq = pool
         .request()
         .input('Sexo', sql.NChar(10), dto.Sexo || null)
-        .input('Rango_Edad', sql.BigInt, dto.Rango_Edad || null)
+        .input('ID_Rango_Edad', sql.BigInt, dto.Rango_Edad || null)
         .input('Cargo', sql.NChar(30), dto.Cargo || null);
         
     // Inserta y devuelve la fila recién creada
     const query = `
                 INSERT INTO ${table} (  [Sexo]
-                                        ,[Rango_Edad]
+                                        ,[ID_Rango_Edad]
                                         ,[Cargo]
                                         )
-                VALUES (@Sexo, @Rango_Edad, @Cargo);
+                VALUES (@Sexo, @ID_Rango_Edad, @Cargo);
                 `; 
     
     const result = await rq.query(query);
@@ -71,24 +71,26 @@ export async function update(dto) {
     // Mezclar los datos actuales con los nuevos datos del DTO
     const updatedData = {
         Sexo: dto.Sexo !== undefined ? dto.Sexo : currentData.Sexo,
-        Rango_Edad: dto.Rango_Edad !== undefined ? dto.Rango_Edad : currentData.Rango_Edad,
+        Rango_Edad: dto.Rango_Edad !== undefined ? dto.Rango_Edad : currentData.Rango_Edad != null ? currentData.Rango_Edad: 1,
         Cargo: dto.Cargo !== undefined ? dto.Cargo : currentData.Cargo
        
     };
+
+    // IMPORTANTE!!! SE DEBE CORREGIR EN EL FRONT EL PAYLOAD AL DEITAR UN TRABAJADOR, NO SE ESTA ENVIANDO EL ID DEL RANGO DE EDAD
 
     //Construye request con parámetros tipados con los datos mezclados
     const rq = pool
         .request()
         .input('TrabajadorId', sql.Int, dto.ID)
         .input('Sexo', sql.NChar(10), updatedData.Sexo || null)
-        .input('Rango_Edad', sql.BigInt, updatedData.Rango_Edad || null)
+        .input('ID_Rango_Edad', sql.BigInt, updatedData.Rango_Edad || null)
         .input('Cargo', sql.NChar(30), updatedData.Cargo || null);
         
 
     const query = `
                 UPDATE ${table}
                 SET Sexo=@Sexo,
-                    Rango_Edad=@Rango_Edad,
+                    ID_Rango_Edad=@ID_Rango_Edad,
                     Cargo=@Cargo
                     
             

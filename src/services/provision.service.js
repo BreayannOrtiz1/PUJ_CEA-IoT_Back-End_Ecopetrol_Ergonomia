@@ -1,10 +1,12 @@
 // Reglas de negocio / coordinador de repositorios
-import * as repo from '../repositories/sensor.repo.js';
+import * as repo from '../repositories/provision.repo.js';
 
 
-// export function getById(id) {
-//     return repo.findById(id);
-// }
+
+export async function listID(dto) {
+    // reglas (duplicados, normalización, auditoría, etc.)
+    return repo.listID(dto);
+}
 
 export async function create(dto) {
     // reglas (duplicados, normalización, auditoría, etc.)
