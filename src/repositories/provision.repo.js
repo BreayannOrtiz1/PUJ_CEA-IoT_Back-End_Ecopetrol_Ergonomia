@@ -109,6 +109,7 @@ export async function listID(dto) {
     return results;
 }
 
+
 export async function insert(dto) {
     const pool = getPool();
     const now = new Date();
@@ -120,7 +121,12 @@ export async function insert(dto) {
         .input('ID_NodoIoT', sql.BigInt, dto.ID_NodoIoT || null)
         .input('ID_Sensor', sql.BigInt, dto.ID_Sensor || null)
         .input('ID_Trabajador', sql.BigInt, dto.ID_Trabajador || null)
-        .input('ID_Config_Provision_Gateways', sql.BigInt, dto.ID_Config_Provision_Gateways || null);
+        .input('ID_Config_Provision_Gateways', sql.BigInt, dto.ID_Config_Provision_Gateways || null)
+        .input('ECG', sql.Bit, dto.ECG || null)
+        .input('HR_RR_RRi', sql.Bit, dto.HR_RR_RRi || null)
+        .input('ACC', sql.Bit, dto.ACC || null)
+        .input('Activo', sql.Bit, dto.Activo || null)
+        .input('SASTOKEN', sql.NVarChar(180), dto.SASTOKEN || null);
         
     
     
@@ -130,14 +136,19 @@ export async function insert(dto) {
                                         ,[ID_Sensor]
                                         ,[ID_Trabajador]
                                         ,[ID_Config_Provision_Gateways]
+                                        ,[ECG]
+                                        ,[HR_RR_RRi]
+                                        ,[ACC]
+                                        ,[Activo]
+                                        ,[SASTOKEN]
                                         )
-                VALUES (@ID_NodoIoT, @ID_Sensor, @ID_Trabajador, @ID_Config_Provision_Gateways);
+                VALUES (@ID_NodoIoT, @ID_Sensor, @ID_Trabajador, @ID_Config_Provision_Gateways, @ECG, @HR_RR_RRi, @ACC, @Activo, @SASTOKEN);
                 `; 
     
     const result = await rq.query(query);
     //console.log(result);
 
-    return result.recordset; // Devolver la fila insertada (SQL Server 2012+) en funcion del serial
+    return result.recordset; // Devolver la fila insertada (SQL Server 2012+) 
 }
 
 
@@ -149,8 +160,8 @@ export async function update(dto) {
     // Primero, obtener los datos actuales del nodo
     const getCurrentData = await pool
         .request()
-        .input('NodoId', sql.Int, dto.ID)
-        .query(`SELECT * FROM ${table} WHERE ID_NodoIoT = @NodoId`);
+        .input('ID', sql.Int, dto.ID)
+        .query(`SELECT * FROM ${table} WHERE ID_Provision_Fisiologicas = @ID`);
 
     const currentData = getCurrentData.recordset[0];
     
@@ -160,42 +171,48 @@ export async function update(dto) {
 
     // Mezclar los datos actuales con los nuevos datos del DTO
     const updatedData = {
-        MAC_Ble: dto.MAC_Ble !== undefined ? dto.MAC_Ble : currentData.MAC_Ble,
-        MAC_Wifi: dto.MAC_Wifi !== undefined ? dto.MAC_Wifi : currentData.MAC_Wifi,
-        Tipo: dto.Tipo !== undefined ? dto.Tipo : currentData.Tipo,
-        OS: dto.OS !== undefined ? dto.OS : currentData.OS,
-        Marca: dto.Marca !== undefined ? dto.Marca : currentData.Marca,
-        Referencia: dto.Referencia !== undefined ? dto.Referencia : currentData.Referencia,
-        Propiedad: dto.Propiedad !== undefined ? dto.Propiedad : currentData.Propiedad
+       
+        ID_NodoIoT: dto.ID_NodoIoT !== undefined ? dto.ID_NodoIoT : currentData.ID_NodoIoT,
+        ID_Sensor: dto.ID_Sensor !== undefined ? dto.ID_Sensor : currentData.ID_Sensor,
+        ID_Trabajador: dto.ID_Trabajador !== undefined ? dto.ID_Trabajador : currentData.ID_Trabajador,
+        ID_Config_Provision_Gateways: dto.ID_Config_Provision_Gateways !== undefined ? dto.ID_Config_Provision_Gateways : currentData.ID_Config_Provision_Gateways,
+        ECG: dto.ECG !== undefined ? dto.ECG : currentData.ECG,
+        HR_RR_RRi: dto.HR_RR_RRi !== undefined ? dto.HR_RR_RRi : currentData.HR_RR_RRi,
+        ACC: dto.ACC !== undefined ? dto.ACC : currentData.ACC,
+        Activo: dto.Activo !== undefined ? dto.Activo : currentData.Activo,
+        SASTOKEN: dto.SASTOKEN !== undefined ? dto.SASTOKEN : currentData.SASTOKEN
     };
 
     //Construye request con parámetros tipados con los datos mezclados
     const rq = pool
         .request()
-        .input('NodoId', sql.Int, dto.ID)
-        .input('MAC_Ble', sql.NChar(30), updatedData.MAC_Ble)
-        .input('MAC_Wifi', sql.NChar(30), updatedData.MAC_Wifi)
-        .input('Tipo', sql.NChar(30), updatedData.Tipo)
-        .input('OS', sql.NChar(30), updatedData.OS)
-        .input('Marca', sql.NChar(30), updatedData.Marca)
-        .input('Referencia', sql.NChar(30), updatedData.Referencia)
-        .input('Propiedad', sql.NChar(30), updatedData.Propiedad);
+        .input('ID_Provision_Fisiologicas', sql.BigInt, dto.ID)
+        .input('ID_NodoIoT', sql.BigInt, updatedData.ID_NodoIoT)
+        .input('ID_Sensor', sql.BigInt, updatedData.ID_Sensor)
+        .input('ID_Trabajador', sql.BigInt, updatedData.ID_Trabajador)
+        .input('ID_Config_Provision_Gateways', sql.BigInt, updatedData.ID_Config_Provision_Gateways)
+        .input('ECG', sql.Bit, updatedData.ECG)
+        .input('HR_RR_RRi', sql.Bit, updatedData.HR_RR_RRi)
+        .input('ACC', sql.Bit, updatedData.ACC)
+        .input('Activo', sql.Bit, updatedData.Activo)
+        .input('SASTOKEN', sql.NVarChar(180), updatedData.SASTOKEN);
 
     const query = `
                 UPDATE ${table}
-                SET MAC_Ble=@MAC_Ble,
-                    MAC_Wifi=@MAC_Wifi,
-                    Tipo=@Tipo,
-                    OS=@OS,
-                    Marca=@Marca,
-                    Referencia=@Referencia,
-                    Propiedad=@Propiedad
-            
-                WHERE ID_NodoIoT=@NodoId;
+                SET ID_NodoIoT=@ID_NodoIoT,
+                    ID_Sensor=@ID_Sensor,
+                    ID_Trabajador=@ID_Trabajador,
+                    ID_Config_Provision_Gateways=@ID_Config_Provision_Gateways,
+                    ECG=@ECG,
+                    HR_RR_RRi=@HR_RR_RRi,
+                    ACC=@ACC,
+                    Activo=@Activo,
+                    SASTOKEN=@SASTOKEN
+                WHERE ID_Provision_Fisiologicas=@ID_Provision_Fisiologicas;
                 
                 SELECT *
                 FROM ${table}
-                WHERE ID_NodoIoT = @NodoId;
+                WHERE ID_Provision_Fisiologicas = @ID_Provision_Fisiologicas;
                 `;
     
     const result = await rq.query(query);
@@ -210,7 +227,7 @@ export async function remove(dto) {
     
     const pool = getPool();
     const rq = pool.request();
-    const query = `DELETE FROM ${table} WHERE ID_NodoIoT=${dto.ID}`;
+    const query = `DELETE FROM ${table} WHERE ID_Provision_Fisiologicas=${dto.ID}`;
     
     const result = await rq.query(query);
     //console.log(result);

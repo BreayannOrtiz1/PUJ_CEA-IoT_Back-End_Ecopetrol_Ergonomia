@@ -3,25 +3,8 @@
 import { getPool, sql } from '../config/db.js';
 
 
-// Cambia por el nombre real de tu tabla
 const table = '[ECO].[Trabajador]';
 
-//Paa listar todos los elementos basta con hacer un llamado al endpoint /gateway con el body { "tableName": "Lugar" }
-// export async function findAll(dto) {
-    
-// }
-
-// export async function findById(id) {
-//     const pool = getPool();
-//     const result = await pool
-//         .request()
-//         .input('GatewayId', sql.VarChar(64), id)
-//         .query(
-//             `SELECT GatewayId, Name, Location, IPAddress, Notes, CreatedAt, UpdatedAt
-// FROM ${table}
-// WHERE GatewayId = @GatewayId`
-//         );
-//     return result.recordset[0]; // undefined si no existe
 
 export async function insert(dto) {
     const pool = getPool();
@@ -32,7 +15,7 @@ export async function insert(dto) {
     const rq = pool
         .request()
         .input('Sexo', sql.NChar(10), dto.Sexo || null)
-        .input('ID_Rango_Edad', sql.BigInt, dto.Rango_Edad || null)
+        .input('ID_Rango_Edad', sql.BigInt, dto.ID_Rango_Edad ?? null)
         .input('Cargo', sql.NChar(30), dto.Cargo || null);
         
     // Inserta y devuelve la fila recién creada

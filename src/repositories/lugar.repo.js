@@ -2,27 +2,7 @@
 // Acceso a datos (SQL puro parametrizado para evitar inyecciones)
 import { getPool, sql } from '../config/db.js';
 
-
-// Cambia por el nombre real de tu tabla
 const table = '[ECO].[Lugar]';
-
-//Paa listar todos los elementos basta con hacer un llamado al endpoint /gateway con el body { "tableName": "Lugar" }
-// export async function findAll(dto) {
-    
-// }
-
-// export async function findById(id) {
-//     const pool = getPool();
-//     const result = await pool
-//         .request()
-//         .input('GatewayId', sql.VarChar(64), id)
-//         .query(
-//             `SELECT GatewayId, Name, Location, IPAddress, Notes, CreatedAt, UpdatedAt
-// FROM ${table}
-// WHERE GatewayId = @GatewayId`
-//         );
-//     return result.recordset[0]; // undefined si no existe
-// }
 
 export async function insert(dto) {
     const pool = getPool();
@@ -32,11 +12,11 @@ export async function insert(dto) {
     //Construye request con parámetros tipados
     const rq = pool
         .request()
-        .input('Municipio', sql.NChar(40), dto.municipio || null)
-        .input('Sede', sql.NChar(40), dto.sede || null)
-        .input('Edificio', sql.NChar(40), dto.edificio || null)
-        .input('Piso', sql.NChar(40), dto.piso || null)
-        .input('Area', sql.NChar(40), dto.area || null);
+        .input('Municipio', sql.NChar(40), dto.Municipio || null)
+        .input('Sede', sql.NChar(40), dto.Sede || null)
+        .input('Edificio', sql.NChar(40), dto.Edificio || null)
+        .input('Piso', sql.NChar(40), dto.Piso || null)
+        .input('Area', sql.NChar(40), dto.Area || null);
     
     
     // Inserta y devuelve la fila recién creada
@@ -75,11 +55,11 @@ export async function update(dto) {
     
         // Mezclar los datos actuales con los nuevos datos del DTO
         const updatedData = {
-            municipio: dto.municipio !== undefined ? dto.municipio : currentData.Municipio,
-            sede: dto.sede !== undefined ? dto.sede : currentData.Sede,
-            edificio: dto.edificio !== undefined ? dto.edificio : currentData.Edificio,
-            piso: dto.piso !== undefined ? dto.piso : currentData.Piso,
-            area: dto.area !== undefined ? dto.area : currentData.Area
+            municipio: dto.Municipio !== undefined ? dto.Municipio : currentData.Municipio,
+            sede: dto.Sede !== undefined ? dto.Sede : currentData.Sede,
+            edificio: dto.Edificio !== undefined ? dto.Edificio : currentData.Edificio,
+            piso: dto.Piso !== undefined ? dto.Piso : currentData.Piso,
+            area: dto.Area !== undefined ? dto.Area : currentData.Area
         };
     //Construye request con parámetros tipados
     const rq = pool

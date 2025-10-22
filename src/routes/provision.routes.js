@@ -14,11 +14,11 @@ router.post('/listID', ctrl.listID);
 router.post('/register', ctrl.register);
 
 
-// Actualizar (PUT /api/v1/nodoiot/update)
+// Actualizar (PUT /api/v1/--/update)
 router.put('/update', ctrl.update);
 
 
-// Eliminar (DELETE /api/v1/nodoiot/remove)
+// Eliminar (DELETE /api/v1/--/remove)
 router.delete('/remove', ctrl.remove);
 
 export default router;

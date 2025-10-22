@@ -4,32 +4,29 @@ import Joi from 'joi';
 
 export const createGatewaySchema = Joi.object({
 
-    marca: Joi.string().max(100).allow('', null),
-    referencia: Joi.string().max(150).allow('', null).required(),
-    serial: Joi.string().allow('', null).required(),
-    os: Joi.string().max(100).allow('', null),
-    ssid: Joi.string().max(100).allow('', null),
-    macWifi: Joi.string().max(64).allow('', null),
-    macEthernet: Joi.string().max(64).allow('', null)
+    Marca: Joi.string().max(25).allow('', null),
+    Referencia: Joi.string().max(60).allow('', null).required(),
+    Serial: Joi.string().max(30).allow('', null).required(),
+    OS: Joi.string().max(30).allow('', null),
+    SSID: Joi.string().max(40).allow('', null),
+    MAC_WiFi: Joi.string().max(30).allow('', null),
+    MAC_Ethernet: Joi.string().max(30).allow('', null)
+
 });
 
 
 export const updateGatewaySchema = Joi.object({
+
     ID: Joi.number().required(),
-    marca: Joi.string().max(100).allow('', null),
-    referencia: Joi.string().max(250).allow('', null).required(),
-    serial: Joi.string().allow('', null),
-    os: Joi.string().max(100).allow('', null),
-    ssid: Joi.string().max(100).allow('', null),
-    macWifi: Joi.string().max(64).allow('', null),
-    macEthernet: Joi.string().max(64).allow('', null)
-}).min(1); // Exige al menos un campo para actualizar, además del ID
+    Marca: Joi.string().max(25).allow('', null),
+    Referencia: Joi.string().max(60).allow('', null),
+    Serial: Joi.string().allow('', null),
+    OS: Joi.string().max(30).allow('', null),
+    SSID: Joi.string().max(40).allow('', null),
+    MAC_WiFi: Joi.string().max(30).allow('', null),
+    MAC_Ethernet: Joi.string().max(30).allow('', null)
+}); // Exige al menos un campo para actualizar, además del ID
 
 export const deleteGatewaySchema = Joi.object({
     ID: Joi.number().required()
-});
-
-
-export const idParamSchema = Joi.object({
-    id: Joi.string().max(64).required()
 });

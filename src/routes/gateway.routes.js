@@ -8,12 +8,6 @@ import { createGatewaySchema, updateGatewaySchema, deleteGatewaySchema } from '.
 const router = Router();
 
 
-// Lista (GET /api/v1/gateway/:tableName)  
-// Lista todos los campos de la tabla especificada en la url { "tableName": "Gateway" } o { "tableName": "Lugar" } o { "tableName": "Medida" }  o { "tableName": "Nodo" }  o { "tableName": "Sensor" }, etc 
-router.get('/', ctrl.list);
-
-
-
 // Crear    Gateway  (POST /api/v1/gateway/register)
 router.post('/register', validate({ body: createGatewaySchema }), ctrl.register);
 

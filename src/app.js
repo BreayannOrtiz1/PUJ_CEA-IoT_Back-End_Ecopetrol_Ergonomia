@@ -11,6 +11,13 @@ import { notFound, errorHandler } from './middlewares/error.js';
 
 const app = express();
 
+// Logging HTTP estructurado (útil para auditoría y diagnósticos)
+app.use(pino({
+  transport: {
+    target: 'pino-pretty',
+    options: { colorize: true, translateTime: "HH:MM:ss Z", ignore: "pid,hostname" }
+  }
+}));
 
 // Seguridad base (headers) y CORS (ajusta ALLOWED_ORIGIN según tu frontend)
 app.use(helmet());
@@ -21,8 +28,6 @@ app.use(cors({ origin: process.env.ALLOWED_ORIGIN || '*' }));
 app.use(express.json({ limit: '1mb' }));
 
 
-// Logging HTTP estructurado (útil para auditoría y diagnósticos)
-app.use(pino());
 
 
 // Healthcheck simple para probes / monitoreo

@@ -1,47 +1,28 @@
-
 // Acceso a datos (SQL puro parametrizado para evitar inyecciones)
 import { getPool, sql } from '../config/db.js';
 
 
-// Cambia por el nombre real de tu tabla
 const table = '[ECO].[Sensor]';
-
-//Paa listar todos los elementos basta con hacer un llamado al endpoint /gateway con el body { "tableName": "Lugar" }
-// export async function findAll(dto) {
-    
-// }
-
-// export async function findById(id) {
-//     const pool = getPool();
-//     const result = await pool
-//         .request()
-//         .input('GatewayId', sql.VarChar(64), id)
-//         .query(
-//             `SELECT GatewayId, Name, Location, IPAddress, Notes, CreatedAt, UpdatedAt
-// FROM ${table}
-// WHERE GatewayId = @GatewayId`
-//         );
-//     return result.recordset[0]; // undefined si no existe
-// }
 
 export async function insert(dto) {
     const pool = getPool();
     const now = new Date();
     console.log("DTO recibido en el repositorio:");
     console.log(dto);
-    //Construye request con parámetros tipados
    
+    
     const rq = pool
         .request()
         .input('Marca', sql.NChar(30), dto.Marca || null)
         .input('Modelo', sql.NChar(30), dto.Modelo || null)
         .input('Variable', sql.NChar(30), dto.Variable || null)
         .input('Unidad', sql.NChar(20), dto.Unidad || null)
-        .input('ValorMaximo', sql.Float, dto.ValorMaximo || null)
-        .input('ValorMinimo', sql.Float, dto.ValorMinimo || null)
-        .input('Resolucion', sql.Float, dto.Resolucion || null)
+        .input('ValorMaximo', sql.Float, dto.ValorMaximo ?? null)
+        .input('ValorMinimo', sql.Float, dto.ValorMinimo ?? null)
+        .input('Resolucion', sql.Float, dto.Resolucion ?? null)
         .input('MAC', sql.NChar(30), dto.MAC || null)
-        .input('FechaUltimaCalibracion', sql.DateTime, dto.FechaUltimaCalibracion || null);
+        .input('Protocolo', sql.NChar(20), dto.Protocolo || null)
+        .input('FechaUltimaCalibracion', sql.Date, dto.FechaUltimaCalibracion !== undefined ? dto.FechaUltimaCalibracion : null);
 
     // Inserta y devuelve la fila recién creada
     const query = `
@@ -53,8 +34,9 @@ export async function insert(dto) {
                                         ,[ValorMinimo]
                                         ,[Resolucion]
                                         ,[MAC]
+                                        ,[Protocolo]
                                         ,[FechaUltimaCalibracion])
-                VALUES (@Marca, @Modelo, @Variable, @Unidad, @ValorMaximo, @ValorMinimo, @Resolucion, @MAC, @FechaUltimaCalibracion);
+                VALUES (@Marca, @Modelo, @Variable, @Unidad, @ValorMaximo, @ValorMinimo, @Resolucion, @MAC, @Protocolo, @FechaUltimaCalibracion);
                 `; 
     
     const result = await rq.query(query);
@@ -69,6 +51,7 @@ export async function update(dto) {
     console.log(dto);
     const pool = getPool();
 
+    
     // Primero, obtener los datos actuales del nodo
     const getCurrentData = await pool
         .request()
@@ -103,9 +86,9 @@ export async function update(dto) {
         .input('Modelo', sql.NChar(30), updatedData.Modelo || null)
         .input('Variable', sql.NChar(30), updatedData.Variable || null)
         .input('Unidad', sql.NChar(20), updatedData.Unidad || null)
-        .input('ValorMaximo', sql.Float, updatedData.ValorMaximo || null)
-        .input('ValorMinimo', sql.Float, updatedData.ValorMinimo || null)
-        .input('Resolucion', sql.Float, updatedData.Resolucion || null)
+        .input('ValorMaximo', sql.Float, updatedData.ValorMaximo ?? null)
+        .input('ValorMinimo', sql.Float, updatedData.ValorMinimo ?? null)
+        .input('Resolucion', sql.Float, updatedData.Resolucion ?? null)
         .input('MAC', sql.NChar(30), updatedData.MAC || null)
         .input('FechaUltimaCalibracion', sql.DateTime, updatedData.FechaUltimaCalibracion || null);
         

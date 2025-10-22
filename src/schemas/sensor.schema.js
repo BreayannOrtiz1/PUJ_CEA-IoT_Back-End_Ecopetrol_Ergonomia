@@ -6,29 +6,29 @@ import Joi from 'joi';
 export const createSensorSchema = Joi.object({
 
     Marca: Joi.string().max(30).allow('', null).required(),
-    Modelo: Joi.string().max(30).allow('', null).required(),
-    Variable: Joi.string().max(30).allow('', null).required(),
-    Unidad: Joi.string().max(30).allow('', null).required(),
-    ValorMaximo: Joi.number().allow(null).required(),
-    ValorMinimo: Joi.number().allow(null).required(),
-    Resolucion: Joi.number().allow(null).required(),
-    MAC: Joi.string().max(30).allow('', null).required(),
-    FechaUltimaCalibracion: Joi.string().allow('', null).required()
+    Modelo: Joi.string().max(30).allow('', null),
+    Variable: Joi.string().max(30).allow('', null),
+    Unidad: Joi.string().max(30).allow('', null),
+    ValorMaximo: Joi.number().allow(0,null),
+    ValorMinimo: Joi.number().allow(0, null),
+    Resolucion: Joi.number().allow(0, null),
+    MAC: Joi.string().max(30).allow('', null),
+    Protocolo: Joi.string().max(30).allow('', null),
+    FechaUltimaCalibracion: Joi.string().allow('', null)
     
-
 });
 
 
 export const updateSensorSchema = Joi.object({
 
-    ID: Joi.number().max(100).required(),
+    ID: Joi.number().required(),
     Marca: Joi.string().max(30).allow('', null),
     Modelo: Joi.string().max(30).allow('', null),
     Variable: Joi.string().max(30).allow('', null),
     Unidad: Joi.string().max(30).allow('', null),
-    ValorMaximo: Joi.number().precision(2).allow(null),
-    ValorMinimo: Joi.number().precision(2).allow(null),
-    Resolucion: Joi.number().precision(2).allow(null),
+    ValorMaximo: Joi.number().allow(0, null),
+    ValorMinimo: Joi.number().allow(0, null),
+    Resolucion: Joi.number().allow(0, null),
     MAC: Joi.string().max(30).allow('', null),
     FechaUltimaCalibracion: Joi.date().allow(null)
     

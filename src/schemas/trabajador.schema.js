@@ -9,8 +9,8 @@ import Joi from 'joi';
 export const createTrabajadorSchema = Joi.object({
 
     Sexo: Joi.string().max(30).allow('', null).required(),
-    Rango_Edad: Joi.number().max(100).required(),
-    Cargo: Joi.string().max(30).allow('', null).required()     
+    ID_Rango_Edad: Joi.number().required(),
+    Cargo: Joi.string().max(60).allow('', null).required()     
 });
 
 

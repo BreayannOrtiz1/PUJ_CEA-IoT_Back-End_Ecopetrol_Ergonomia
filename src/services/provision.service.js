@@ -14,10 +14,6 @@ export async function create(dto) {
 }
 
 export async function update(dto) {
-    // Verifica existencia antes de actualizar
-    //const exists = await repo.findById(id);
-    console.log("Servicio - Datos recibidos para actualizar:");
-    
     return repo.update(dto);
 }
 

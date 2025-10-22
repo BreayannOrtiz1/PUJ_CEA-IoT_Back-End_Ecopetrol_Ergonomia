@@ -2,60 +2,8 @@
 // Acceso a datos (SQL puro parametrizado para evitar inyecciones)
 import { getPool, sql } from '../config/db.js';
 
-
-// Cambia por el nombre real de tu tabla
 const table = '[ECO].[Gateway]';
 
-
-export async function findAll(tableName) {
-    console.log("Entrando a findAll, table name: "+tableName);
-    
-    const pool = getPool();
-    const rq = pool.request();
-    var query = `
-                SELECT * FROM [ECO].[${tableName}]
-                `;
-    if(tableName === 'ECOPETROL_Main_Telemetry') {
-        query = `
-                SELECT TOP (10) [TimeStamp_Sensor]
-                ,[DeviceID]
-                ,[DeviceSN]
-                ,[HR]
-                ,[RRi_Mean]
-                ,[HRV_SDNN]
-                ,[HRV_RMSSD]
-                ,[RR]
-                ,[AccAccuracy]
-                ,[AverageRR]
-                ,[isLeadOn]
-                ,[isActivity]
-                ,[BatteryPercentage]
-                ,[id]
-                ,[TimeStamp_Write_DB]
-                ,[FromGateway]
-                FROM [dbo].[${tableName}] ORDER BY TimeStamp_Sensor DESC
-                `;
-    }
-    // Devuelve todos los campos de la tabla
-    
-    const result = await rq.query(query);
-    //console.log(result);
-
-    return result.recordset;
-}
-
-export async function findById(id) {
-    const pool = getPool();
-    const result = await pool
-        .request()
-        .input('GatewayId', sql.VarChar(64), id)
-        .query(
-            `SELECT GatewayId, Name, Location, IPAddress, Notes, CreatedAt, UpdatedAt
-FROM ${table}
-WHERE GatewayId = @GatewayId`
-        );
-    return result.recordset[0]; // undefined si no existe
-}
 
 export async function insert(dto) {
     const pool = getPool();
@@ -66,7 +14,7 @@ export async function insert(dto) {
     const rq = pool
         .request()
         .input('Marca', sql.NVarChar(20), dto.marca || null)
-        .input('Referencia', sql.NVarChar(20), dto.referencia || null)
+        .input('Referencia', sql.NVarChar(50), dto.referencia || null)
         .input('Serial', sql.NChar(20), dto.serial || null)
         .input('OS', sql.NChar(20), dto.os || null)
         .input('SSID', sql.NChar(20), dto.ssid || null)
@@ -120,13 +68,13 @@ export async function update(dto) {
             
             // Mezclar los datos actuales con los nuevos datos del DTO
             const updatedData = {
-                marca: dto.marca !== undefined ? dto.marca : currentData.Marca,
-                referencia: dto.referencia !== undefined ? dto.referencia : currentData.Referencia,
-                serial: dto.serial !== undefined ? dto.serial : currentData.Serial,
-                os: dto.os !== undefined ? dto.os : currentData.OS,
-                ssid: dto.ssid !== undefined ? dto.ssid : currentData.SSID,
-                macWifi: dto.macWifi !== undefined ? dto.macWifi : currentData.MAC_Wifi,
-                macEthernet: dto.macEthernet !== undefined ? dto.macEthernet : currentData.MAC_Ethernet
+                Marca: dto.Marca !== undefined ? dto.Marca : currentData.Marca,
+                Referencia: dto.Referencia !== undefined ? dto.Referencia : currentData.Referencia,
+                Serial: dto.Serial !== undefined ? dto.Serial : currentData.Serial,
+                OS: dto.OS !== undefined ? dto.OS : currentData.OS,
+                SSID: dto.SSID !== undefined ? dto.SSID : currentData.SSID,
+                MAC_Wifi: dto.MAC_Wifi !== undefined ? dto.MAC_Wifi : currentData.MAC_Wifi,
+                MAC_Ethernet: dto.MAC_Ethernet !== undefined ? dto.MAC_Ethernet : currentData.MAC_Ethernet
             };
             
             //console.log("Datos mezclados para actualizar:", updatedData);
@@ -134,13 +82,13 @@ export async function update(dto) {
     const rq = pool
         .request()
         .input('GatewayId', sql.Int, dto.ID)
-        .input('Marca', sql.NVarChar(20), updatedData.marca)
-        .input('Referencia', sql.NVarChar(20), updatedData.referencia)
-        .input('Serial', sql.NChar(20), updatedData.serial)
-        .input('OS', sql.NChar(20), updatedData.os)
-        .input('SSID', sql.NChar(20), updatedData.ssid)
-        .input('MACWifi', sql.NChar(20), updatedData.macWifi)
-        .input('MACEthernet', sql.NChar(20), updatedData.macEthernet);
+        .input('Marca', sql.NVarChar(20), updatedData.Marca)
+        .input('Referencia', sql.NVarChar(50), updatedData.Referencia)
+        .input('Serial', sql.NChar(20), updatedData.Serial)
+        .input('OS', sql.NChar(20), updatedData.OS)
+        .input('SSID', sql.NChar(20), updatedData.SSID)
+        .input('MACWifi', sql.NChar(20), updatedData.MAC_Wifi)
+        .input('MACEthernet', sql.NChar(20), updatedData.MAC_Ethernet);
 
     
     // Inserta y devuelve la fila recién creada
@@ -155,7 +103,7 @@ export async function update(dto) {
                 `;
     
     const result = await rq.query(query);
-    //console.log(result);
+    console.log(result.recordset[0]);
 
     return result.recordset[0];
 }

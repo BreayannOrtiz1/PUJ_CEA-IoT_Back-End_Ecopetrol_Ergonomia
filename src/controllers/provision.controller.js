@@ -81,7 +81,6 @@ export async function listID(req, res) {
 }
 
 
-
 export async function register(req, res) {
     console.log("Controlador - Datos recibidos:", req.body);
     const created = await service.create(req.body);
